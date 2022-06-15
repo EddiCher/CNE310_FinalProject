@@ -39,7 +39,7 @@ def root():
         cur.execute('SELECT productId, name, price, description, image, stock FROM products LIMIT 11')
         item_data = cur.fetchall()
         # Show an error instead of the categories
-        category_data = [(-1,"Error")]
+        category_data = [(0, "Error")]
         # Show all categories
         cur.execute('SELECT categoryId, name FROM categories')
         category_data = cur.fetchall()
@@ -93,6 +93,9 @@ def displayCategory():
             "SELECT products.productId, products.name, products.price, products.image, categories.name FROM products, categories WHERE products.categoryId = categories.categoryId AND categories.categoryId = " + category_id)
         data = cur.fetchall()
     conn.close()
+
+    if data != []:
+        print("data:",  data)
     category_name = data[0][4]
     data = parse(data)
     return render_template('displayCategory.html', data=data, loggedIn=logged_in, firstName=first_name,
@@ -176,10 +179,10 @@ def update_profile():
 @app.route("/loginForm")
 def login_form():
     # Uncomment to enable logging in and registration
-    #if 'email' in session:
+    if 'email' in session:
         return redirect(url_for('root'))
-    #else:
-    #    return render_template('login.html', error='')
+    else:
+       return render_template('login.html', error='')
 
 @app.route("/login", methods = ['POST', 'GET'])
 def login():
